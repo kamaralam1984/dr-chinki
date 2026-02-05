@@ -26,21 +26,51 @@
 
 1. **Clone the repository**:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/chinki-ai-medical-tutor.git
+   git clone https://github.com/kamaralam1984/dr-chinki.git
+   cd dr-chinki
    ```
 
 2. **Environment Variables**:
-   Ensure you have a valid Gemini API Key. The app expects `process.env.API_KEY`.
+   Create a `.env.local` file in the root directory:
+   ```bash
+   VITE_API_KEY=your_gemini_api_key_here
+   ```
 
 3. **Install Dependencies**:
    ```bash
    npm install
    ```
 
-4. **Run Locally**:
+4. **Start Both Servers (Frontend + Backend)**:
+
+   **Option 1: Using npm script (Recommended)**
    ```bash
+   npm run dev:all
+   ```
+   This will start both frontend (Vite) and backend (Flask) servers simultaneously.
+
+   **Option 2: Using shell script (macOS/Linux)**
+   ```bash
+   ./start.sh
+   ```
+
+   **Option 3: Using batch file (Windows)**
+   ```cmd
+   start.bat
+   ```
+
+   **Option 4: Manual start**
+   ```bash
+   # Terminal 1 - Backend
+   python3 memory_server.py
+   
+   # Terminal 2 - Frontend
    npm run dev
    ```
+
+5. **Access the Application**:
+   - Frontend: http://localhost:3000
+   - Backend API: http://localhost:5000
 
 ## 📜 Authority
 Developed under the authority of **Boss Kamar Alam**. 
