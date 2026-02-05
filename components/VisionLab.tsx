@@ -1,0 +1,1 @@
+// This component is deprecated. Please refer to VisualPane.tsx for 3D logic.

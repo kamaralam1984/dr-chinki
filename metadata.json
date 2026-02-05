@@ -1,0 +1,8 @@
+{
+  "name": "Chinki AI Medical Tutor",
+  "description": "An advanced AI-powered educational platform for NEET students featuring interactive 3D anatomy, voice-enabled AI tutoring, and exam-focused revision tools.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ]
+}
