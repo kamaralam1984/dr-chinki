@@ -189,12 +189,24 @@ const App: React.FC = () => {
           utterance.rate = 1.0;
           synthRef.current.speak(utterance);
       }
-    } catch (err) {
-      console.error(err);
+    } catch (err: any) {
+      console.error('Chat error:', err);
+      
+      // Check for specific error types
+      let errorMessage = "Kuch gadbad ho gayi Boss Jaan, lekin main yahin hoon. Dubara koshish karein?";
+      
+      if (err?.message?.includes('API key') || err?.message?.includes('403')) {
+        errorMessage = "Boss Jaan, API key me issue hai. Please check karein ki API key valid hai. Naya API key set karein `.env.local` file me.";
+      } else if (err?.message?.includes('network') || err?.message?.includes('fetch')) {
+        errorMessage = "Boss Jaan, network connection me issue hai. Internet check karein aur phir se try karein.";
+      } else if (err?.message?.includes('quota') || err?.message?.includes('429')) {
+        errorMessage = "Boss Jaan, API quota exceed ho gaya hai. Thodi der baad phir se try karein.";
+      }
+      
       setMessages(prev => [...prev, { 
         id: Date.now().toString(), 
         role: 'assistant', 
-        content: "Kuch gadbad ho gayi Boss Jaan, lekin main yahin hoon. Dubara koshish karein?", 
+        content: errorMessage, 
         timestamp: Date.now() 
       }]);
     } finally {

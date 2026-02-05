@@ -259,10 +259,15 @@ export async function recognizeVoice(speechSample: string): Promise<{
 export async function getUserProfile(): Promise<{ success: boolean; profile: UserProfile | null }> {
     try {
         const response = await fetch('http://localhost:5000/api/user/profile');
+        if (!response.ok) {
+            // Backend not running or error - return gracefully
+            return { success: false, profile: null };
+        }
         const data = await response.json();
         return data;
     } catch (error) {
-        console.error('Error getting user profile:', error);
+        // Backend not running - silently fail and return null profile
+        // This is expected if backend is not running
         return { success: false, profile: null };
     }
 }

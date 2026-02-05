@@ -99,10 +99,11 @@ export const getTutorResponse = async (
   try {
     let finalPrompt = userPrompt || "Aapke liye haazir hoon Boss Jaan!";
 
-    // FETCH MEMORY CONTEXT
-    const { profile } = await getUserProfile();
-    if (profile) {
-      const memoryContext = `
+    // FETCH MEMORY CONTEXT (gracefully handle if backend is not running)
+    try {
+      const { profile } = await getUserProfile();
+      if (profile) {
+        const memoryContext = `
 [USER MEMORY]:
 - Name: ${profile.name || 'Boss Jaan'}
 - Interests: ${profile.interests?.join(', ') || 'N/A'}
@@ -112,7 +113,11 @@ export const getTutorResponse = async (
 - Personality: ${profile.personality_type || 'N/A'}
 - Preferred Language: ${profile.preferred_language || 'Hinglish'}
 `;
-      finalPrompt = memoryContext + "\n\n" + finalPrompt;
+        finalPrompt = memoryContext + "\n\n" + finalPrompt;
+      }
+    } catch (profileError) {
+      // Backend not running - continue without profile context
+      console.warn('User profile not available (backend may not be running):', profileError);
     }
 
     // Prompt Engineering for Website Analysis
@@ -189,10 +194,34 @@ export const getTutorResponse = async (
     }
 
     return parsed;
-  } catch (error) {
+  } catch (error: any) {
     console.error("Dr. Chinki Logic Error:", error);
+    
+    // Check for API key errors
+    if (error?.status === 403 || error?.message?.includes('403') || error?.message?.includes('API key')) {
+      return {
+        explanation: "Boss Jaan, API key me issue hai. Please check karein ki API key valid hai aur leaked nahi hui. Naya API key set karein.",
+        suggestedModel: 'none',
+        voiceOutput: "API authentication failed. Please update the API key.",
+        imagePrompt: "",
+        cameraPermissionRequested: false
+      };
+    }
+    
+    // Check for network errors
+    if (error?.message?.includes('fetch') || error?.message?.includes('network')) {
+      return {
+        explanation: "Boss Jaan, network connection me issue hai. Internet check karein aur phir se try karein.",
+        suggestedModel: 'none',
+        voiceOutput: "Network connection error. Please check your internet.",
+        imagePrompt: "",
+        cameraPermissionRequested: false
+      };
+    }
+    
+    // Generic error
     return {
-      explanation: "Boss Jaan, technical glitch aaya hai. Shayad server busy hai.",
+      explanation: "Boss Jaan, technical glitch aaya hai. Shayad server busy hai. Thodi der baad phir se try karein.",
       suggestedModel: 'none',
       voiceOutput: "System overload. Please try again.",
       imagePrompt: "",
