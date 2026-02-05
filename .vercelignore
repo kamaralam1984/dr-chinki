@@ -1,0 +1,9 @@
+requirements.txt
+backend/
+venv/
+.venv/
+memory_server.py
+verify_database.py
+*.db
+memory_images/
+memory_audios/
